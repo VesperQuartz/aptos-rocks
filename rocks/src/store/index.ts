@@ -10,8 +10,9 @@ type GameStep = {
 };
 
 type Move = {
-  move: number | undefined;
-  setMove: (move: number) => void;
+  move: Array<number | undefined>;
+  setPlayerMove: (move: number) => void;
+  setComputerMove: (move: number) => void;
   resetMove: () => void;
 };
 
@@ -46,14 +47,18 @@ export const useGameStepStore = create<GameStep>()(
 
 export const useMoveStore = create<Move>()(
   immer((set) => ({
-    move: undefined,
-    setMove: (move: number) =>
+    move: [],
+    setPlayerMove: (move: number) =>
       set((state) => {
-        state.move = move;
+        state.move[0] = move;
+      }),
+    setComputerMove: (move: number) =>
+      set((state) => {
+        state.move[1] = move;
       }),
     resetMove: () =>
       set((state) => {
-        state.move = undefined;
+        state.move = [];
       }),
   })),
 );

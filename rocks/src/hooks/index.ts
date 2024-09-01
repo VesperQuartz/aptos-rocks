@@ -48,8 +48,7 @@ export const useSetPlayerMove = () => {
       });
       return playerMove;
     },
-    onSuccess: (data) => {
-      console.log("set_player_move", data);
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["balance"],
       });
@@ -74,8 +73,7 @@ export const useRandomlySetComputerMove = () => {
       });
       return computerMove;
     },
-    onSuccess: (data) => {
-      console.log("randomly_set_computer_move", data);
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["balance"],
       });
@@ -101,8 +99,7 @@ export const useFinalizeGameResults = () => {
       });
       return finalizeGame;
     },
-    onSuccess: (data) => {
-      console.log("finalize_game_results", data);
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["balance"],
       });
@@ -136,7 +133,6 @@ export const useGetComputerMove = ({
           functionArguments: [account!.address],
         },
       });
-      console.log("computerMove: ", computerMove);
       return computerMove[0];
     },
     enabled: !!deps1 && !!deps2,
@@ -163,7 +159,6 @@ export const useGetGameResult = ({
           functionArguments: [account!.address],
         },
       });
-      console.log("game_result: ", result);
       return result[0];
     },
     enabled: !!deps1 && !!deps2,

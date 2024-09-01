@@ -1,11 +1,7 @@
 import { useGameScore, useGameStepStore, useMoveStore } from "@/store";
 import { match } from "ts-pattern";
 import { Paper, Rock, Scissors } from "../icons";
-import {
-  useGetComputerMove,
-  useGetGameResult,
-  useRandomlySetComputerMove,
-} from "@/hooks";
+import { useGetComputerMove, useRandomlySetComputerMove } from "@/hooks";
 import React from "react";
 import { Button } from "../ui/button";
 import clsx from "clsx";
@@ -13,9 +9,10 @@ import { Loader } from "../loader";
 import { useMutationState } from "@tanstack/react-query";
 
 export const Step2 = () => {
-  const [move, resetMove] = useMoveStore((state) => [
+  const [move, resetMove, setComputerMove] = useMoveStore((state) => [
     state.move,
     state.resetMove,
+    state.setComputerMove,
   ]);
   const [incPlayer, incComputer] = useGameScore((state) => [
     state.incPlayerScore,
@@ -36,14 +33,7 @@ export const Step2 = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     deps2: (final as any)?.hash,
   });
-  const winner = useGetGameResult({
-    deps1: computerMove?.data,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    deps2: (final as any)?.hash,
-  });
-  console.log("comp move", computerMove);
-  console.log("winner -", winner);
-  console.log("final", final);
+
   React.useEffect(() => {
     const timeout = setTimeout(() => {
       computer.mutate();
@@ -51,32 +41,53 @@ export const Step2 = () => {
     return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   React.useEffect(() => {
-    if (winner.isSuccess && !winner.isLoading) {
-      setTimeout(() => {
-        match(winner.data)
-          .with(1, () => {
-            incPlayer();
-            incComputer();
-          })
-          .with(2, () => {
-            incPlayer();
-          })
-          .with(3, () => {
-            incComputer();
-          })
-          .otherwise(() => {});
-      }, 3000);
+    if (computerMove.data && final !== undefined) {
+      setComputerMove(computerMove.data as number);
     }
+  }, [computerMove.data, setComputerMove, final]);
+  React.useEffect(() => {
+    match(move)
+      .with([1, 1], () => {
+        incPlayer();
+        incComputer();
+      })
+      .with([2, 2], () => {
+        incPlayer();
+        incComputer();
+      })
+      .with([3, 3], () => {
+        incPlayer();
+        incComputer();
+      })
+      .with([1, 2], () => {
+        incComputer();
+      })
+      .with([1, 3], () => {
+        incPlayer();
+      })
+      .with([2, 1], () => {
+        incPlayer();
+      })
+      .with([2, 3], () => {
+        incComputer();
+      })
+      .with([3, 1], () => {
+        incComputer();
+      })
+      .with([3, 2], () => {
+        incPlayer();
+      })
+      .otherwise(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [winner.data]);
+  }, [computerMove.data, computerMove.isSuccess, move]);
+  console.log("move", move);
   return (
     <div>
       <div className="flex items-center gap-5 flex-col md:flex-row">
         <div className="w-[15rem] h-[15rem] flex items-center justify-center flex-col gap-2">
           <p className="text-xl uppercase tracking-wide">You picked</p>
-          {match(move)
+          {match(move[0])
             .with(1, () => {
               return (
                 <div className="cursor-pointer rounded-full bg-gradient-to-b from-from-rock to-to-rock w-[10rem] h-[10rem] flex items-center justify-center drop-shadow-md">
@@ -108,45 +119,55 @@ export const Step2 = () => {
         </div>
         <div className="w-[15rem] h-[15rem]  flex items-center justify-center">
           <div className="flex flex-col gap-4 justify-center items-center">
-            {winner.isLoading || computerMove.isPending ? (
-              <Loader />
-            ) : (
-              <>
-                {match(winner.data)
-                  .with(1, () => (
-                    <p className="text-xl uppercase">It's A Tie</p>
-                  ))
-                  .with(2, () => (
-                    <p className="text-xl uppercase">You Win 🥳</p>
-                  ))
-                  .with(3, () => (
-                    <p className="text-xl uppercase">Computer Win 😢</p>
-                  ))
-                  .otherwise(() => null)}
-                <Button
-                  onClick={() => {
-                    resetStep();
-                    resetMove();
-                  }}
-                  className={clsx(
-                    "text-black font-bold h-10 w-40 bg-white text-xl",
-                    {
-                      "text-green-400": winner.data === 2,
-                      "text-red-500": winner.data === 3,
-                    },
-                  )}
-                >
-                  Play Again
-                </Button>
-              </>
-            )}
+            {match(move)
+              .with([1, 1], () => (
+                <p className="text-xl uppercase">It's A Tie</p>
+              ))
+              .with([2, 2], () => (
+                <p className="text-xl uppercase">It's A Tie</p>
+              ))
+              .with([3, 3], () => (
+                <p className="text-xl uppercase">It's A Tie</p>
+              ))
+              .with([1, 2], () => (
+                <p className="text-xl uppercase">Computer Win 😢</p>
+              ))
+              .with([1, 3], () => (
+                <p className="text-xl uppercase">You Win 🥳</p>
+              ))
+              .with([2, 1], () => (
+                <p className="text-xl uppercase">You Win 🥳</p>
+              ))
+              .with([2, 3], () => (
+                <p className="text-xl uppercase">Computer Win 😢</p>
+              ))
+              .with([3, 1], () => (
+                <p className="text-xl uppercase">Computer Win 😢</p>
+              ))
+              .with([3, 2], () => (
+                <p className="text-xl uppercase">You Win 🥳</p>
+              ))
+              .otherwise(() => null)}
+            <Button
+              onClick={() => {
+                resetStep();
+                resetMove();
+              }}
+              className={clsx(
+                "text-black font-bold h-10 w-40 bg-white text-xl",
+              )}
+            >
+              Play Again
+            </Button>
           </div>
         </div>
         <div className="w-[15rem] h-[15rem]  flex items-center justify-center flex-col gap-2">
           <p className="text-xl uppercase tracking-wide text-center">
             Computer picked
           </p>
-          {computer.isPending || computerMove.isLoading ? (
+          {computer.isPending ||
+          computerMove.isLoading ||
+          final === undefined ? (
             <Loader />
           ) : (
             <>

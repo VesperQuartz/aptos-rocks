@@ -8,12 +8,12 @@ import { useShallow } from "zustand/react/shallow";
 export const Step1 = () => {
   const [increment] = useGameStepStore((state) => [state.incrementStep]);
   const [move, setMove] = useMoveStore(
-    useShallow((state) => [state.move, state.setMove]),
+    useShallow((state) => [state.move, state.setPlayerMove]),
   );
   const handleMove = useSetPlayerMove();
   const handleInc = () => {
-    if (move) {
-      match(move)
+    if (move[0]) {
+      match(move[0])
         .with(1, () => {
           toast.success("You picked Rock");
         })
@@ -24,7 +24,7 @@ export const Step1 = () => {
           toast.success("You picked Scissors");
         })
         .otherwise(() => null);
-      handleMove.mutate(move, {
+      handleMove.mutate(move[0], {
         onSuccess: () => {
           increment();
         },
@@ -42,7 +42,7 @@ export const Step1 = () => {
             className="bg-white rounded-full p-4"
             onClick={() => {
               setMove(2);
-              if (move === 2) {
+              if (move[0] === 2) {
                 handleInc();
               }
             }}
@@ -58,7 +58,7 @@ export const Step1 = () => {
             className="bg-white rounded-full p-4"
             onClick={() => {
               setMove(3);
-              if (move === 3) {
+              if (move[0] === 3) {
                 handleInc();
               }
             }}
@@ -74,7 +74,7 @@ export const Step1 = () => {
             className="bg-white rounded-full p-4"
             onClick={() => {
               setMove(1);
-              if (move === 1) {
+              if (move[0] === 1) {
                 handleInc();
               }
             }}
