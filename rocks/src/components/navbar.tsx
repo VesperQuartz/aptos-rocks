@@ -9,8 +9,17 @@ export const NavBar = () => {
   const balance = useGetBalance(account!);
   return (
     <nav className="flex justify-between p-4 items-center">
-      {connected && account && (
-        <div className="text-2xl font-bold">{balance.data} APT</div>
+      {connected && account && balance.data && (
+        <div className="text-2xl font-bold">
+          <p>
+            {balance.data} <span className="text">APT</span>
+          </p>
+          <p className="text-green-500">
+            <span className="text-white">~</span>
+            {" $ "}
+            {Number(balance.data.toFixed(2)) * 6.37}
+          </p>
+        </div>
       )}
       <div className="flex flex-col p-2">
         <WalletSelector />

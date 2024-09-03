@@ -81,10 +81,12 @@ export const Step2 = () => {
       .otherwise(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [computerMove.data, computerMove.isSuccess, move]);
-  console.log("move", move);
   return (
-    <div>
-      <div className="flex items-center gap-5 flex-col md:flex-row">
+    <div key={crypto.randomUUID()}>
+      <div
+        key={crypto.randomUUID()}
+        className="flex items-center gap-5 flex-col md:flex-row"
+      >
         <div className="w-[15rem] h-[15rem] flex items-center justify-center flex-col gap-2">
           <p className="text-xl uppercase tracking-wide">You picked</p>
           {match(move[0])
@@ -117,7 +119,10 @@ export const Step2 = () => {
             })
             .otherwise(() => null)}
         </div>
-        <div className="w-[15rem] h-[15rem]  flex items-center justify-center">
+        <div
+          key={crypto.randomUUID()}
+          className="w-[15rem] h-[15rem]  flex items-center justify-center"
+        >
           <div className="flex flex-col gap-4 justify-center items-center">
             {match(move)
               .with([1, 1], () => (
@@ -154,14 +159,17 @@ export const Step2 = () => {
                 resetMove();
               }}
               className={clsx(
-                "text-black font-bold h-10 w-40 bg-white text-xl",
+                "text-black font-bold h-10 w-40 bg-white text-xl hover:text-white",
               )}
             >
               Play Again
             </Button>
           </div>
         </div>
-        <div className="w-[15rem] h-[15rem]  flex items-center justify-center flex-col gap-2">
+        <div
+          key={crypto.randomUUID()}
+          className="w-[15rem] h-[15rem]  flex items-center justify-center flex-col gap-2"
+        >
           <p className="text-xl uppercase tracking-wide text-center">
             Computer picked
           </p>

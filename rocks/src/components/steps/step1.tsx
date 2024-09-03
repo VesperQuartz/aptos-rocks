@@ -32,7 +32,7 @@ export const Step1 = () => {
     }
   };
   return (
-    <div>
+    <div key={crypto.randomUUID()}>
       <div className="relative">
         <div
           title="paper"
@@ -71,6 +71,7 @@ export const Step1 = () => {
           className="cursor-pointer absolute -bottom-10 right-[34%] rounded-full bg-gradient-to-b from-from-rock to-to-rock w-[7rem] h-[7rem] flex items-center justify-center drop-shadow-md"
         >
           <div
+            key={crypto.randomUUID()}
             className="bg-white rounded-full p-4"
             onClick={() => {
               setMove(1);
