@@ -4,6 +4,10 @@
 
 https://github.com/user-attachments/assets/a26c9446-e55e-4575-83d2-ac947b5cebc1
 
+> [!IMPORTANT]
+>
+> If the video shows error use a chromium based browser.
+
 [aptos-rocks](https://aptos-rocks.vercel.app/)
 
 ## Introduction
