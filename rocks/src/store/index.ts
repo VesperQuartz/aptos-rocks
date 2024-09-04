@@ -9,6 +9,11 @@ type GameStep = {
   resetStep: () => void;
 };
 
+type StartGame = {
+  count: number;
+  incrementCount: () => void;
+};
+
 type Move = {
   move: Array<number | undefined>;
   setPlayerMove: (move: number) => void;
@@ -23,6 +28,19 @@ type Scores = {
   incComputerScore: () => void;
   resetScore: () => void;
 };
+
+export const useGameStart = create<StartGame>()(
+  persist(
+    immer((set) => ({
+      count: 0,
+      incrementCount: () =>
+        set((state) => {
+          state.count++;
+        }),
+    })),
+    { name: "count" },
+  ),
+);
 
 export const useGameStepStore = create<GameStep>()(
   persist(
